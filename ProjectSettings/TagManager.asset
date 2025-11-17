@@ -11,8 +11,8 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
+  - target
+  - obstacle
   - 
   - 
   - 
@@ -44,8 +44,14 @@ TagManager:
   - name: Radar
     uniqueID: 3326548667
     locked: 0
+  - name: Dark
+    uniqueID: 2583282593
+    locked: 0
   - name: Player
     uniqueID: 1332460735
+    locked: 0
+  - name: New Layer 4
+    uniqueID: 1563590073
     locked: 0
   m_RenderingLayers:
   - Default
