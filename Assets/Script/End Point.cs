@@ -1,40 +1,38 @@
 using UnityEngine;
-using UnityEngine.UI;  // UI 사용을 위해 필요!
+using UnityEngine.SceneManagement;
 
 public class EndPoint : MonoBehaviour
 {
-    [Header("클리어 UI")]
-    public GameObject clearUI;  // 클리어 문구 UI
+    public static bool hasReachedEnd = false; // 엔딩 지점에 도달했는지 여부
+    public Transform returnPosition; // 돌아갈 위치 (시작 지점)
 
-    void Start()
+    [Header("Visual Feedback")]
+    public GameObject completionEffect; // 엔딩 터치 시 이펙트 (선택사항)
+
+    private void Start()
     {
-        // 시작할 때 클리어 UI 숨기기
-        if (clearUI != null)
-        {
-            clearUI.SetActive(false);
-        }
+        hasReachedEnd = false; // 게임 시작 시 초기화
     }
 
-    void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        // 플레이어가 닿았는지 확인
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && !hasReachedEnd)
         {
-            ShowClear();
+            // 엔딩 지점 도달
+            hasReachedEnd = true;
+            Debug.Log("엔딩 지점 도달! 시작 지점으로 돌아가세요.");
+
+            // 시각적 피드백 (선택사항)
+            if (completionEffect != null)
+            {
+                Instantiate(completionEffect, transform.position, Quaternion.identity);
+            }
+
+            // 플레이어를 시작 위치로 이동
+            if (returnPosition != null)
+            {
+                other.transform.position = returnPosition.position;
+            }
         }
-    }
-
-    void ShowClear()
-    {
-        Debug.Log(" 클리어!");
-
-        // 클리어 UI 표시
-        if (clearUI != null)
-        {
-            clearUI.SetActive(true);
-        }
-
-        // 게임 일시정지 (선택사항)
-        Time.timeScale = 0f;
     }
 }
