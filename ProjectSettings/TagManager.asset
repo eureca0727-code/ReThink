@@ -14,7 +14,7 @@ TagManager:
   - UI
   - target
   - obstacle
-  - 
+  - EnemyBody
   - 
   - 
   - 
@@ -44,6 +44,12 @@ TagManager:
     locked: 0
   - name: Radar
     uniqueID: 3326548667
+    locked: 0
+  - name: Vertical wall
+    uniqueID: 4149586123
+    locked: 0
+  - name: Horizontal wall
+    uniqueID: 709698211
     locked: 0
   - name: Dark
     uniqueID: 2583282593

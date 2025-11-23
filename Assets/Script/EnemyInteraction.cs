@@ -206,10 +206,26 @@ public class EnemyInteraction : MonoBehaviour
     private void OnAllyButtonClicked()
     {
         Debug.Log("우리편으로!");
-        // TODO: AllyVision
+
+        // 시야 공유 활성화
+        if (nearbyEnemy != null)
+        {
+            GameObject enemyParent = nearbyEnemy.transform.parent != null ?
+                nearbyEnemy.transform.parent.gameObject : nearbyEnemy;
+
+            EnemyVisionShare visionShare = enemyParent.GetComponent<EnemyVisionShare>();
+            if (visionShare != null)
+            {
+                visionShare.BecomeAlly();
+            }
+            else
+            {
+                Debug.LogWarning($"[EnemyInteraction] {enemyParent.name}에 EnemyVisionShare가 없습니다!");
+            }
+        }
+
         CloseChoicePanel();
     }
-
     private void OnKillButtonClicked()
     {
         Debug.Log("죽이기!");

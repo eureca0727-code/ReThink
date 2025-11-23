@@ -4,14 +4,14 @@ using UnityEngine.SceneManagement;
 public class EnemyRadar : MonoBehaviour
 {
     [Header("Detection Settings")]
-    public float detectionCooldown = 2f; // QTE 실패 후 다시 감지되기까지 쿨타임
+    public float detectionCooldown = 2f;
+    public LayerMask wallLayerMask;  // Obstacle 레이어 체크!
 
     private bool canDetect = true;
     private float cooldownTimer = 0f;
 
     void Update()
     {
-        // 쿨타임 체크
         if (!canDetect)
         {
             cooldownTimer -= Time.deltaTime;
@@ -24,10 +24,57 @@ public class EnemyRadar : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        // 플레이어와 충돌했는지 확인
         if (other.CompareTag("Player") && canDetect)
         {
-            TriggerDetection();
+            if (CanSeePlayer(other.transform.position))
+            {
+                TriggerDetection();
+            }
+        }
+    }
+
+    void OnTriggerStay2D(Collider2D other)
+    {
+        if (other.CompareTag("Player") && canDetect)
+        {
+            if (CanSeePlayer(other.transform.position))
+            {
+                TriggerDetection();
+            }
+        }
+    }
+
+    // 벽 체크: 적 본체 → 플레이어 사이에 벽 있는지
+    bool CanSeePlayer(Vector3 playerPos)
+    {
+        // 레이더 위치가 아닌, 적 본체(부모) 위치에서 Raycast
+        Vector2 startPos = transform.parent != null
+            ? (Vector2)transform.parent.position
+            : (Vector2)transform.position;
+
+        Vector2 direction = (Vector2)playerPos - startPos;
+        float distance = direction.magnitude;
+
+        // 디버그: Scene 뷰에서 Raycast 시각화 (빨간 선)
+        Debug.DrawRay(startPos, direction, Color.red, 0.5f);
+
+        RaycastHit2D hit = Physics2D.Raycast(
+            startPos,
+            direction.normalized,
+            distance,
+            wallLayerMask
+        );
+
+        // 디버그: 무엇에 부딪혔는지 확인
+        if (hit.collider != null)
+        {
+            Debug.Log($"[Raycast] 벽 감지됨: {hit.collider.name}, Layer: {LayerMask.LayerToName(hit.collider.gameObject.layer)}");
+            return false;  // 벽에 막힘 → 감지 안 함
+        }
+        else
+        {
+            Debug.Log("[Raycast] 벽 없음 - 플레이어 보임!");
+            return true;   // 벽 없음 → 감지함
         }
     }
 
@@ -35,18 +82,14 @@ public class EnemyRadar : MonoBehaviour
     {
         Debug.Log($"[{transform.parent.name}] 플레이어 감지!");
 
-        // QTE 발동
         if (QTEManager.Instance != null)
         {
             QTEManager.Instance.TriggerQTE();
-
-            // 쿨타임 시작 (QTE 중복 발동 방지)
             canDetect = false;
             cooldownTimer = detectionCooldown;
         }
         else
         {
-            // QTE 매니저가 없으면 기존처럼 바로 게임오버
             GameOver();
         }
     }

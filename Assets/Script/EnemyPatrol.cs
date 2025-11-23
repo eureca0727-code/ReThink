@@ -5,7 +5,6 @@ public class EnemyPatrol : MonoBehaviour
     [Header("순찰 설정")]
     public Transform[] patrolPoints;
     public float moveSpeed = 2f;
-    public float rotationSpeed = 5f;
     public float waitTime = 1f;
 
     private int currentPointIndex = 0;
@@ -59,12 +58,20 @@ public class EnemyPatrol : MonoBehaviour
         if (isWaiting)
         {
             waitTimer += Time.deltaTime;
-
             if (waitTimer >= waitTime)
             {
                 isWaiting = false;
                 waitTimer = 0f;
                 currentPointIndex = (currentPointIndex + 1) % patrolPoints.Length;
+
+                // 다음 지점으로 즉시 회전
+                Transform nextPoint = patrolPoints[currentPointIndex];
+                Vector3 nextDirection = (nextPoint.position - transform.position).normalized;
+                if (nextDirection != Vector3.zero)
+                {
+                    float angle = Mathf.Atan2(nextDirection.y, nextDirection.x) * Mathf.Rad2Deg;
+                    transform.rotation = Quaternion.Euler(0, 0, angle);
+                }
             }
         }
         // 이동 중
@@ -76,12 +83,11 @@ public class EnemyPatrol : MonoBehaviour
             // 이동
             transform.position += direction * moveSpeed * Time.deltaTime;
 
-            // 회전
+            // 즉시 회전 (Lerp 제거)
             if (direction != Vector3.zero)
             {
                 float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-                Quaternion targetRotation = Quaternion.Euler(0, 0, angle);
-                transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+                transform.rotation = Quaternion.Euler(0, 0, angle);
             }
 
             // 도착 체크

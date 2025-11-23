@@ -2,25 +2,23 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
+using System.Collections.Generic;
 
 public class QTEManager : MonoBehaviour
 {
     public static QTEManager Instance;
 
     [Header("QTE Settings")]
-    public KeyCode[] possibleKeys = new KeyCode[]
+    public KeyCode[] arrowKeys = new KeyCode[]
     {
-        KeyCode.Q, KeyCode.E, KeyCode.R, KeyCode.T,
-        KeyCode.Y, KeyCode.U, KeyCode.I, KeyCode.O, KeyCode.P,
-        KeyCode.F, KeyCode.G, KeyCode.H, KeyCode.J, KeyCode.K, KeyCode.L,
-        KeyCode.Z, KeyCode.X, KeyCode.C, KeyCode.V,
-        KeyCode.B, KeyCode.N, KeyCode.M
+        KeyCode.UpArrow,
+        KeyCode.DownArrow,
+        KeyCode.LeftArrow,
+        KeyCode.RightArrow
     };
 
     [Header("Time Settings")]
-    public float initialTime = 3f;
-    public float minimumTime = 1f;
-    public float difficultyFactor = 0.5f;
+    public float qteTime = 3f;
 
     [Header("Slow Motion Settings")]
     public bool useSlowMotion = true;
@@ -33,17 +31,31 @@ public class QTEManager : MonoBehaviour
 
     [Header("UI References")]
     public GameObject qtePanel;
-    public TextMeshProUGUI keyText;
+    public TextMeshProUGUI sequenceText;
     public Image timerBar;
     public TextMeshProUGUI timerText;
     public TextMeshProUGUI detectionCountText;
 
     private bool qteActive = false;
-    private KeyCode currentKey;
+    private List<KeyCode> currentSequence = new List<KeyCode>();
+    private int currentInputIndex = 0;
     private float timeRemaining;
-    private float maxTime;
     private int detectionCount = 0;
     private float targetTimeScale = 1f;
+
+    private KeyCode[] ignoredKeys = new KeyCode[]
+    {
+        KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D
+    };
+
+    // 화살표 아이콘 매핑
+    private Dictionary<KeyCode, string> arrowIcons = new Dictionary<KeyCode, string>()
+    {
+        { KeyCode.UpArrow, "^" },
+        { KeyCode.DownArrow, "v" },
+        { KeyCode.LeftArrow, "<" },
+        { KeyCode.RightArrow, ">" }
+    };
 
     void Awake()
     {
@@ -83,7 +95,6 @@ public class QTEManager : MonoBehaviour
 
     void Update()
     {
-        // 대화 중이면 QTE 로직 실행 안 함
         if (!qteActive && Time.timeScale < 0.01f)
         {
             return;
@@ -109,15 +120,33 @@ public class QTEManager : MonoBehaviour
                 return;
             }
 
-            if (Input.GetKeyDown(currentKey))
+            KeyCode expectedKey = currentSequence[currentInputIndex];
+
+            // 정답 키를 눌렀을 때만 진행
+            if (Input.GetKeyDown(expectedKey))
             {
-                SuccessQTE();
+                currentInputIndex++;
+                UpdateSequenceUI();
+
+                if (currentInputIndex >= currentSequence.Count)
+                {
+                    SuccessQTE();
+                }
             }
-            else if (Input.anyKeyDown)
+            // 잘못된 키를 눌러도 무시 (아무 일도 안 일어남)
+        }
+    }
+
+    bool IsIgnoredKey()
+    {
+        foreach (KeyCode key in ignoredKeys)
+        {
+            if (Input.GetKeyDown(key))
             {
-                FailQTE();
+                return true;
             }
         }
+        return false;
     }
 
     public void TriggerQTE()
@@ -134,13 +163,57 @@ public class QTEManager : MonoBehaviour
 
         FreezePlayer();
 
-        currentKey = possibleKeys[Random.Range(0, possibleKeys.Length)];
-        maxTime = CalculateQTETime();
-        timeRemaining = maxTime;
+        GenerateSequence(detectionCount);
+        currentInputIndex = 0;
+        timeRemaining = qteTime;
 
         ShowQTE();
 
-        Debug.Log($"[QTE] 발각 {detectionCount}번째 - 키: {currentKey}, 시간: {maxTime:F2}초");
+        Debug.Log($"[QTE] 발각 {detectionCount}번째 - 시퀀스: {GetSequenceDebugString()}");
+    }
+
+    void GenerateSequence(int length)
+    {
+        currentSequence.Clear();
+        for (int i = 0; i < length; i++)
+        {
+            KeyCode randomArrow = arrowKeys[Random.Range(0, arrowKeys.Length)];
+            currentSequence.Add(randomArrow);
+        }
+    }
+
+    string GetSequenceDebugString()
+    {
+        string result = "";
+        foreach (KeyCode key in currentSequence)
+        {
+            result += arrowIcons[key] + " ";
+        }
+        return result;
+    }
+
+    string GetSequenceString()
+    {
+        string result = "";
+        for (int i = 0; i < currentSequence.Count; i++)
+        {
+            if (i < currentInputIndex)
+            {
+                // 이미 입력한 화살표는 회색으로
+                result += "<color=#888888>" + arrowIcons[currentSequence[i]] + "</color>  ";
+            }
+            else if (i == currentInputIndex)
+            {
+                // 현재 입력해야 할 화살표는 노란색 + 크게
+                result += "<color=yellow><size=80>" + arrowIcons[currentSequence[i]] + "</size></color>  ";
+            }
+            else
+            {
+                // 아직 입력 안한 화살표는 흰색으로
+                result += arrowIcons[currentSequence[i]] + "  ";
+            }
+        }
+        return result;
     }
 
     void FreezePlayer()
@@ -169,13 +242,6 @@ public class QTEManager : MonoBehaviour
         Debug.Log("[QTE] 플레이어 조작 활성화");
     }
 
-    float CalculateQTETime()
-    {
-        float baseTime = initialTime - minimumTime;
-        float time = minimumTime + baseTime / (1f + (detectionCount - 1) * difficultyFactor);
-        return Mathf.Max(time, minimumTime);
-    }
-
     void ShowQTE()
     {
         if (qtePanel != null)
@@ -183,13 +249,17 @@ public class QTEManager : MonoBehaviour
             qtePanel.SetActive(true);
         }
 
-        if (keyText != null)
-        {
-            keyText.text = currentKey.ToString();
-        }
-
+        UpdateSequenceUI();
         UpdateDetectionCountUI();
         UpdateTimerUI();
+    }
+
+    void UpdateSequenceUI()
+    {
+        if (sequenceText != null)
+        {
+            sequenceText.text = GetSequenceString();
+        }
     }
 
     void HideQTE()
@@ -213,13 +283,13 @@ public class QTEManager : MonoBehaviour
     {
         if (timerBar != null)
         {
-            timerBar.fillAmount = timeRemaining / maxTime;
+            timerBar.fillAmount = timeRemaining / qteTime;
 
-            if (timeRemaining / maxTime > 0.5f)
+            if (timeRemaining / qteTime > 0.5f)
             {
                 timerBar.color = Color.green;
             }
-            else if (timeRemaining / maxTime > 0.25f)
+            else if (timeRemaining / qteTime > 0.25f)
             {
                 timerBar.color = Color.yellow;
             }
