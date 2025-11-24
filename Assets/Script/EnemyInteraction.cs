@@ -177,19 +177,43 @@ public class EnemyInteraction : MonoBehaviour
     {
         Debug.Log("선택지 표시!");
 
+        // 적의 선택지 설정 확인
+        GameObject enemyParent = nearbyEnemy.transform.parent != null ?
+            nearbyEnemy.transform.parent.gameObject : nearbyEnemy;
+
+        EnemyChoiceConfig choiceConfig = enemyParent.GetComponent<EnemyChoiceConfig>();
+
         if (dialogueText != null)
             dialogueText.text = "어떻게 할까?";
 
         if (buttonPanel != null)
             buttonPanel.SetActive(true);
 
+        // 선택지 활성화 여부 결정
         if (allyButton != null)
-            allyButton.gameObject.SetActive(true);
+        {
+            if (choiceConfig != null)
+            {
+                allyButton.gameObject.SetActive(choiceConfig.canBecomeAlly);
+            }
+            else
+            {
+                allyButton.gameObject.SetActive(true); // 기본값: 둘 다 가능
+            }
+        }
 
         if (killButton != null)
-            killButton.gameObject.SetActive(true);
-    }
-
+        {
+            if (choiceConfig != null)
+            {
+                killButton.gameObject.SetActive(choiceConfig.canBeKilled);
+            }
+            else
+            {
+                killButton.gameObject.SetActive(true); // 기본값: 둘 다 가능
+            }
+        }
+    }   
     private void CloseChoicePanel()
     {
         Debug.Log("대화 종료!");

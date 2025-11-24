@@ -157,7 +157,7 @@ MonoBehaviour:
   detectionCooldown: 2
   wallLayerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 128
 --- !u!1 &4556007644370109561
 GameObject:
   m_ObjectHideFlags: 0
@@ -349,6 +349,7 @@ GameObject:
   - component: {fileID: 3279887226813192947}
   - component: {fileID: 4343979178155319696}
   - component: {fileID: 2295327722079403984}
+  - component: {fileID: 4315628599218642326}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -531,3 +532,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyVisionShare
   fieldOfView: {fileID: 222012114520069420}
+--- !u!114 &4315628599218642326
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8172694687516100878}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d6207e96ea50a84f81c80f4bebc8309, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyChoiceConfig
+  canBecomeAlly: 1
+  canBeKilled: 1
+  allyDisabledMessage: "\uC774 \uC801\uC740 \uC124\uB4DD\uD560 \uC218 \uC5C6\uB2E4."
+  killDisabledMessage: "\uC8FD\uC77C \uC218 \uC5C6\uB2E4."
