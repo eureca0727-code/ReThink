@@ -26,6 +26,13 @@ public class EnemyRadar : MonoBehaviour
     {
         if (other.CompareTag("Player") && canDetect)
         {
+            // 대시 중인지 확인
+            if (IsPlayerDashing(other))
+            {
+                Debug.Log($"[{transform.parent.name}] 플레이어가 대시 중 - 감지 무시!");
+                return;
+            }
+
             if (CanSeePlayer(other.transform.position))
             {
                 TriggerDetection();
@@ -37,11 +44,29 @@ public class EnemyRadar : MonoBehaviour
     {
         if (other.CompareTag("Player") && canDetect)
         {
+            // 대시 중인지 확인
+            if (IsPlayerDashing(other))
+            {
+                Debug.Log($"[{transform.parent.name}] 플레이어가 대시 중 - 감지 무시!");
+                return;
+            }
+
             if (CanSeePlayer(other.transform.position))
             {
                 TriggerDetection();
             }
         }
+    }
+
+    // 플레이어가 대시 중인지 확인
+    bool IsPlayerDashing(Collider2D playerCollider)
+    {
+        PlayerController playerController = playerCollider.GetComponent<PlayerController>();
+        if (playerController != null)
+        {
+            return playerController.IsDashing();
+        }
+        return false;
     }
 
     // 벽 체크: 적 본체 → 플레이어 사이에 벽 있는지

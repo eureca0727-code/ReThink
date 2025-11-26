@@ -15,16 +15,14 @@ public class EnemyInteraction : MonoBehaviour
     [Header("기본 대사 (적에게 대사가 없을 때)")]
     [TextArea(2, 5)]
     public string[] defaultDialogues = {
-        "[적] 넌 누구지?!",
-        "[나] 조용히 해. 소리 지르면...",
-        "[적] 제발 살려줘!",
-        "[나] 선택하겠어."
+        "[적] !! ",
+        "[나] ",
     };
 
     private GameObject nearbyEnemy;
     private bool isChoiceOpen = false;
     private int currentDialogueIndex = 0;
-    private string[] currentDialogues; // 현재 사용할 대사
+    private string[] currentDialogues;
 
     private void Start()
     {
@@ -36,13 +34,11 @@ public class EnemyInteraction : MonoBehaviour
 
         if (allyButton != null)
         {
-            allyButton.gameObject.SetActive(true);
             allyButton.onClick.AddListener(OnAllyButtonClicked);
         }
 
         if (killButton != null)
         {
-            killButton.gameObject.SetActive(true);
             killButton.onClick.AddListener(OnKillButtonClicked);
         }
 
@@ -54,7 +50,6 @@ public class EnemyInteraction : MonoBehaviour
     {
         if (isChoiceOpen)
         {
-            // TimeScale 유지
             if (Time.timeScale != 0f)
             {
                 Time.timeScale = 0f;
@@ -120,7 +115,6 @@ public class EnemyInteraction : MonoBehaviour
         isChoiceOpen = true;
         currentDialogueIndex = 0;
 
-        // 적의 부모 오브젝트에서 대사 가져오기
         GameObject enemyParent = nearbyEnemy.transform.parent != null ?
             nearbyEnemy.transform.parent.gameObject : nearbyEnemy;
 
@@ -177,7 +171,6 @@ public class EnemyInteraction : MonoBehaviour
     {
         Debug.Log("선택지 표시!");
 
-        // 적의 선택지 설정 확인
         GameObject enemyParent = nearbyEnemy.transform.parent != null ?
             nearbyEnemy.transform.parent.gameObject : nearbyEnemy;
 
@@ -189,7 +182,6 @@ public class EnemyInteraction : MonoBehaviour
         if (buttonPanel != null)
             buttonPanel.SetActive(true);
 
-        // 선택지 활성화 여부 결정
         if (allyButton != null)
         {
             if (choiceConfig != null)
@@ -198,7 +190,7 @@ public class EnemyInteraction : MonoBehaviour
             }
             else
             {
-                allyButton.gameObject.SetActive(true); // 기본값: 둘 다 가능
+                allyButton.gameObject.SetActive(true);
             }
         }
 
@@ -210,10 +202,11 @@ public class EnemyInteraction : MonoBehaviour
             }
             else
             {
-                killButton.gameObject.SetActive(true); // 기본값: 둘 다 가능
+                killButton.gameObject.SetActive(true);
             }
         }
-    }   
+    }
+
     private void CloseChoicePanel()
     {
         Debug.Log("대화 종료!");
@@ -231,7 +224,6 @@ public class EnemyInteraction : MonoBehaviour
     {
         Debug.Log("우리편으로!");
 
-        // 시야 공유 활성화
         if (nearbyEnemy != null)
         {
             GameObject enemyParent = nearbyEnemy.transform.parent != null ?
@@ -250,6 +242,7 @@ public class EnemyInteraction : MonoBehaviour
 
         CloseChoicePanel();
     }
+
     private void OnKillButtonClicked()
     {
         Debug.Log("죽이기!");
@@ -259,7 +252,23 @@ public class EnemyInteraction : MonoBehaviour
             GameObject enemyParent = nearbyEnemy.transform.parent != null ?
                 nearbyEnemy.transform.parent.gameObject : nearbyEnemy;
 
-            Destroy(enemyParent);
+            // EnemyPatrol의 Die() 메서드 호출
+            EnemyPatrol enemyPatrol = enemyParent.GetComponent<EnemyPatrol>();
+            if (enemyPatrol != null)
+            {
+                enemyPatrol.Die();  // Die()가 카운트 증가 + Destroy 처리
+            }
+            else
+            {
+                // EnemyPatrol이 없는 경우 (다른 타입의 적)
+                Debug.LogWarning($"{enemyParent.name}에 EnemyPatrol 컴포넌트가 없습니다.");
+
+                if (EnemySpawnManager.Instance != null)
+                {
+                    EnemySpawnManager.Instance.RegisterEnemyKill();
+                }
+                Destroy(enemyParent);
+            }
         }
 
         CloseChoicePanel();

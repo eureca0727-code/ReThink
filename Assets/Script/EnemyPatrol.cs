@@ -97,4 +97,17 @@ public class EnemyPatrol : MonoBehaviour
             }
         }
     }
+    public void Die()
+    {
+        Debug.Log($"{gameObject.name} 처치됨!");
+
+        // EnemySpawnManager에 알림
+        if (EnemySpawnManager.Instance != null)
+        {
+            EnemySpawnManager.Instance.RegisterEnemyKill();
+        }
+
+        Destroy(gameObject);
+    }
+
 }

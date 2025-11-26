@@ -3,7 +3,7 @@ using UnityEngine;
 
 public enum SoulType
 {
-    Target,    // 찾아야 하는 영혼 (가게 주인)
+    Target,    // 찾아야 하는 영혼 
     Normal     // 일반 영혼들
 }
 
@@ -39,4 +39,10 @@ public class Soul : MonoBehaviour
     {
         return dialogues;
     }
+
+    public bool IsTargetSoul()
+    {
+        return soulType == SoulType.Target;
+    }
+
 }
