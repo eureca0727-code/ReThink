@@ -9,12 +9,12 @@ public class QTEManager : MonoBehaviour
     public static QTEManager Instance;
 
     [Header("QTE Settings")]
-    public KeyCode[] arrowKeys = new KeyCode[]
+    public KeyCode[] qteKeys = new KeyCode[]
     {
-        KeyCode.UpArrow,
-        KeyCode.DownArrow,
-        KeyCode.LeftArrow,
-        KeyCode.RightArrow
+        KeyCode.W,
+        KeyCode.A,
+        KeyCode.S,
+        KeyCode.D
     };
 
     [Header("Time Settings")]
@@ -43,18 +43,13 @@ public class QTEManager : MonoBehaviour
     private int detectionCount = 0;
     private float targetTimeScale = 1f;
 
-    private KeyCode[] ignoredKeys = new KeyCode[]
+    // WASD 아이콘 매핑
+    private Dictionary<KeyCode, string> keyIcons = new Dictionary<KeyCode, string>()
     {
-        KeyCode.W, KeyCode.A, KeyCode.S, KeyCode.D
-    };
-
-    // 화살표 아이콘 매핑
-    private Dictionary<KeyCode, string> arrowIcons = new Dictionary<KeyCode, string>()
-    {
-        { KeyCode.UpArrow, "^" },
-        { KeyCode.DownArrow, "v" },
-        { KeyCode.LeftArrow, "<" },
-        { KeyCode.RightArrow, ">" }
+        { KeyCode.W, "^" },
+        { KeyCode.A, "<" },
+        { KeyCode.S, "v" },
+        { KeyCode.D, ">" }
     };
 
     void Awake()
@@ -137,18 +132,6 @@ public class QTEManager : MonoBehaviour
         }
     }
 
-    bool IsIgnoredKey()
-    {
-        foreach (KeyCode key in ignoredKeys)
-        {
-            if (Input.GetKeyDown(key))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public void TriggerQTE()
     {
         if (qteActive) return;
@@ -177,8 +160,8 @@ public class QTEManager : MonoBehaviour
         currentSequence.Clear();
         for (int i = 0; i < length; i++)
         {
-            KeyCode randomArrow = arrowKeys[Random.Range(0, arrowKeys.Length)];
-            currentSequence.Add(randomArrow);
+            KeyCode randomKey = qteKeys[Random.Range(0, qteKeys.Length)];
+            currentSequence.Add(randomKey);
         }
     }
 
@@ -187,7 +170,7 @@ public class QTEManager : MonoBehaviour
         string result = "";
         foreach (KeyCode key in currentSequence)
         {
-            result += arrowIcons[key] + " ";
+            result += keyIcons[key] + " ";
         }
         return result;
     }
@@ -199,18 +182,18 @@ public class QTEManager : MonoBehaviour
         {
             if (i < currentInputIndex)
             {
-                // 이미 입력한 화살표는 회색으로
-                result += "<color=#888888>" + arrowIcons[currentSequence[i]] + "</color>  ";
+                // 이미 입력한 키는 회색으로
+                result += "<color=#888888>" + keyIcons[currentSequence[i]] + "</color>  ";
             }
             else if (i == currentInputIndex)
             {
-                // 현재 입력해야 할 화살표는 노란색 + 크게
-                result += "<color=yellow><size=80>" + arrowIcons[currentSequence[i]] + "</size></color>  ";
+                // 현재 입력해야 할 키는 노란색 + 크게
+                result += "<color=yellow><size=80>" + keyIcons[currentSequence[i]] + "</size></color>  ";
             }
             else
             {
-                // 아직 입력 안한 화살표는 흰색으로
-                result += arrowIcons[currentSequence[i]] + "  ";
+                // 아직 입력 안한 키는 흰색으로
+                result += keyIcons[currentSequence[i]] + "  ";
             }
         }
         return result;

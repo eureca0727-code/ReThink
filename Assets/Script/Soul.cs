@@ -16,8 +16,8 @@ public class Soul : MonoBehaviour
     [Header("대사")]
     [TextArea(2, 5)]
     public string[] dialogues = {
-        "[영혼] 고마워요...",
-        "[영혼] 이제 편히 쉴 수 있겠어요."
+        "[영혼] ",
+        "[영혼] "
     };
 
     private bool isCollected = false;
