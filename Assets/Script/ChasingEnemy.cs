@@ -98,7 +98,7 @@ public class ChasingEnemy : MonoBehaviour
         RaycastHit2D hitLeft = Physics2D.Raycast(
             transform.position,
             leftDirection,
-            obstacleDetectionDistance,
+            obstacleDetectionDistance,  
             obstacleLayer
         );
 

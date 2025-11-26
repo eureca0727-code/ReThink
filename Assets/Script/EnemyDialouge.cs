@@ -14,3 +14,4 @@ public class EnemyDialogue : MonoBehaviour
         return dialogues;
     }
 }
+    
