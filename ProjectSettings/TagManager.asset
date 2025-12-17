@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 3
+  tags:
+  - EnemyBody
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - target
+  - obstacle
+  - EnemyBody
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Radar
+    uniqueID: 3326548667
+    locked: 0
+  - name: Vertical wall
+    uniqueID: 4149586123
+    locked: 0
+  - name: Horizontal wall
+    uniqueID: 709698211
+    locked: 0
+  - name: Dark
+    uniqueID: 2583282593
+    locked: 0
+  - name: Player
+    uniqueID: 1332460735
+    locked: 0
+  - name: New Layer 4
+    uniqueID: 1563590073
+    locked: 0
+  m_RenderingLayers:
+  - Default
