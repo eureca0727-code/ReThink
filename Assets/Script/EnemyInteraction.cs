@@ -12,18 +12,29 @@ public class EnemyInteraction : MonoBehaviour
     public Button allyButton;
     public Button killButton;
 
+<<<<<<< HEAD
     [Header("ï¿½âº» ï¿½ï¿½ï¿½ (ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ç°¡ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½)")]
     [TextArea(2, 5)]
     public string[] defaultDialogues = {
         "[ï¿½ï¿½] !! ",
         "[ï¿½ï¿½] ",
+=======
+    [Header("±âº» ´ë»ç (Àû¿¡°Ô ´ë»ç°¡ ¾øÀ» ¶§)")]
+    [TextArea(2, 5)]
+    public string[] defaultDialogues = {
+        "[Àû] !! ",
+        "[³ª] ",
+>>>>>>> 1ab43000bb30df9695c6a15123d97ed3b7f1bbe0
     };
 
     private GameObject nearbyEnemy;
     private bool isChoiceOpen = false;
     private int currentDialogueIndex = 0;
     private string[] currentDialogues;
+<<<<<<< HEAD
     public static bool IsInDialogue = false;
+=======
+>>>>>>> 1ab43000bb30df9695c6a15123d97ed3b7f1bbe0
 
     private void Start()
     {
@@ -111,11 +122,15 @@ public class EnemyInteraction : MonoBehaviour
 
     private void OpenChoicePanel()
     {
+<<<<<<< HEAD
         IsInDialogue = true; // ëŒ€í™” ì‹œìž‘ ì‹œ true
         isChoiceOpen = true;
         Time.timeScale = 0f; // ê²Œìž„ ì¼ì‹œì •ì§€
 
         Debug.Log("ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½!");
+=======
+        Debug.Log("´ëÈ­ ½ÃÀÛ!");
+>>>>>>> 1ab43000bb30df9695c6a15123d97ed3b7f1bbe0
 
         isChoiceOpen = true;
         currentDialogueIndex = 0;
@@ -128,12 +143,20 @@ public class EnemyInteraction : MonoBehaviour
         if (enemyDialogue != null)
         {
             currentDialogues = enemyDialogue.GetDialogues();
+<<<<<<< HEAD
             Debug.Log("ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½: " + enemyParent.name);
+=======
+            Debug.Log("Àû °íÀ¯ ´ë»ç »ç¿ë: " + enemyParent.name);
+>>>>>>> 1ab43000bb30df9695c6a15123d97ed3b7f1bbe0
         }
         else
         {
             currentDialogues = defaultDialogues;
+<<<<<<< HEAD
             Debug.Log("ï¿½âº» ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½");
+=======
+            Debug.Log("±âº» ´ë»ç »ç¿ë");
+>>>>>>> 1ab43000bb30df9695c6a15123d97ed3b7f1bbe0
         }
 
         if (interactionHint != null)
@@ -174,7 +197,11 @@ public class EnemyInteraction : MonoBehaviour
 
     private void ShowButtons()
     {
+<<<<<<< HEAD
         Debug.Log("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ç¥ï¿½ï¿½!");
+=======
+        Debug.Log("¼±ÅÃÁö Ç¥½Ã!");
+>>>>>>> 1ab43000bb30df9695c6a15123d97ed3b7f1bbe0
 
         GameObject enemyParent = nearbyEnemy.transform.parent != null ?
             nearbyEnemy.transform.parent.gameObject : nearbyEnemy;
@@ -182,7 +209,11 @@ public class EnemyInteraction : MonoBehaviour
         EnemyChoiceConfig choiceConfig = enemyParent.GetComponent<EnemyChoiceConfig>();
 
         if (dialogueText != null)
+<<<<<<< HEAD
             dialogueText.text = "ï¿½î¶»ï¿½ï¿½ ï¿½Ò±ï¿½?";
+=======
+            dialogueText.text = "¾î¶»°Ô ÇÒ±î?";
+>>>>>>> 1ab43000bb30df9695c6a15123d97ed3b7f1bbe0
 
         if (buttonPanel != null)
             buttonPanel.SetActive(true);
@@ -214,10 +245,14 @@ public class EnemyInteraction : MonoBehaviour
 
     private void CloseChoicePanel()
     {
+<<<<<<< HEAD
         IsInDialogue = false; // ëŒ€í™” ì¢…ë£Œ ì‹œ false
         isChoiceOpen = false;
         
         Debug.Log("ï¿½ï¿½È­ ï¿½ï¿½ï¿½ï¿½!");
+=======
+        Debug.Log("´ëÈ­ Á¾·á!");
+>>>>>>> 1ab43000bb30df9695c6a15123d97ed3b7f1bbe0
 
         isChoiceOpen = false;
 
@@ -225,15 +260,23 @@ public class EnemyInteraction : MonoBehaviour
             choicePanel.SetActive(false);
 
         nearbyEnemy = null;
+<<<<<<< HEAD
         if (QTEManager.Instance == null || !QTEManager.Instance.IsQTEActive())
         {
             Time.timeScale = 1f;
         }
+=======
+        Time.timeScale = 1f;
+>>>>>>> 1ab43000bb30df9695c6a15123d97ed3b7f1bbe0
     }
 
     private void OnAllyButtonClicked()
     {
+<<<<<<< HEAD
         Debug.Log("ï¿½ì¸®ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!");
+=======
+        Debug.Log("¿ì¸®ÆíÀ¸·Î!");
+>>>>>>> 1ab43000bb30df9695c6a15123d97ed3b7f1bbe0
 
         if (nearbyEnemy != null)
         {
@@ -247,7 +290,11 @@ public class EnemyInteraction : MonoBehaviour
             }
             else
             {
+<<<<<<< HEAD
                 Debug.LogWarning($"[EnemyInteraction] {enemyParent.name}ï¿½ï¿½ EnemyVisionShareï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½!");
+=======
+                Debug.LogWarning($"[EnemyInteraction] {enemyParent.name}¿¡ EnemyVisionShare°¡ ¾ø½À´Ï´Ù!");
+>>>>>>> 1ab43000bb30df9695c6a15123d97ed3b7f1bbe0
             }
         }
 
@@ -256,13 +303,18 @@ public class EnemyInteraction : MonoBehaviour
 
     private void OnKillButtonClicked()
     {
+<<<<<<< HEAD
         Debug.Log("ï¿½ï¿½ï¿½Ì±ï¿½!");
+=======
+        Debug.Log("Á×ÀÌ±â!");
+>>>>>>> 1ab43000bb30df9695c6a15123d97ed3b7f1bbe0
 
         if (nearbyEnemy != null)
         {
             GameObject enemyParent = nearbyEnemy.transform.parent != null ?
                 nearbyEnemy.transform.parent.gameObject : nearbyEnemy;
 
+<<<<<<< HEAD
             // EnemyPatrolï¿½ï¿½ Die() ï¿½Þ¼ï¿½ï¿½ï¿½ È£ï¿½ï¿½
             EnemyPatrol enemyPatrol = enemyParent.GetComponent<EnemyPatrol>();
             if (enemyPatrol != null)
@@ -273,6 +325,18 @@ public class EnemyInteraction : MonoBehaviour
             {
                 // EnemyPatrolï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ (ï¿½Ù¸ï¿½ Å¸ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½)
                 Debug.LogWarning($"{enemyParent.name}ï¿½ï¿½ EnemyPatrol ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï´ï¿½.");
+=======
+            // EnemyPatrolÀÇ Die() ¸Þ¼­µå È£Ãâ
+            EnemyPatrol enemyPatrol = enemyParent.GetComponent<EnemyPatrol>();
+            if (enemyPatrol != null)
+            {
+                enemyPatrol.Die();  // Die()°¡ Ä«¿îÆ® Áõ°¡ + Destroy Ã³¸®
+            }
+            else
+            {
+                // EnemyPatrolÀÌ ¾ø´Â °æ¿ì (´Ù¸¥ Å¸ÀÔÀÇ Àû)
+                Debug.LogWarning($"{enemyParent.name}¿¡ EnemyPatrol ÄÄÆ÷³ÍÆ®°¡ ¾ø½À´Ï´Ù.");
+>>>>>>> 1ab43000bb30df9695c6a15123d97ed3b7f1bbe0
 
                 if (EnemySpawnManager.Instance != null)
                 {
